@@ -118,8 +118,11 @@ export default function HomePage() {
   }, []);
 
   // Handle Like
-  const handleLike = async (e: React.MouseEvent, postId: string, currentLiked: boolean) => {
-    e.preventDefault();
+  const handleLike = async (e: React.MouseEvent, postId: string, currentLiked: boolean | null | undefined) => {
+  // Convert undefined/null to false
+  const isCurrentlyLiked = currentLiked === true;
+  
+  // Then use isCurrentlyLiked instead of currentLiked in the rest of the function
     
     if (!user) {
       alert('Please login to like posts');
