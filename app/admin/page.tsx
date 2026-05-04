@@ -5,6 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import { collection, getDocs, updateDoc, doc, deleteDoc, orderBy, query } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
+import Link from 'next/link';
 
 interface Post {
   id: string;
@@ -58,14 +59,12 @@ export default function AdminDashboard() {
         posts.push({ 
           id: doc.id, 
           ...data,
-          createdAt: data.createdAt,
           status: data.status || 'pending'
         } as Post);
       });
       
       setAllPosts(posts);
       
-      // Calculate stats
       const pending = posts.filter(p => p.status === 'pending').length;
       const approved = posts.filter(p => p.status === 'approved').length;
       const rejected = posts.filter(p => p.status === 'rejected').length;
@@ -73,7 +72,7 @@ export default function AdminDashboard() {
       
     } catch (error) {
       console.error('Error fetching posts:', error);
-      alert('Failed to fetch posts. Check console for details.');
+      alert('Failed to fetch posts');
     } finally {
       setLoading(false);
     }
@@ -82,12 +81,10 @@ export default function AdminDashboard() {
   const filterPosts = () => {
     let filtered = [...allPosts];
     
-    // Filter by status
     if (activeTab !== 'all') {
       filtered = filtered.filter(post => post.status === activeTab);
     }
     
-    // Filter by search
     if (searchTerm) {
       filtered = filtered.filter(post => 
         post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
