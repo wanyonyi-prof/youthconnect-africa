@@ -12,42 +12,31 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-// Initialize Firebase
-const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
-const auth = getAuth(app);
-const db = getFirestore(app);
-const storage = getStorage(app);
+// Check if we're in a browser environment and have valid config
+const isBrowser = typeof window !== 'undefined';
+const hasValidConfig = firebaseConfig.apiKey && firebaseConfig.apiKey !== 'your_firebase_api_key' && firebaseConfig.projectId;
+
+let app;
+let auth;
+let db;
+let storage;
+
+if (isBrowser && hasValidConfig) {
+  app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+  auth = getAuth(app);
+  db = getFirestore(app);
+  storage = getStorage(app);
+} else {
+  // Provide dummy values for SSR/build time
+  app = null;
+  auth = null;
+  db = null;
+  storage = null;
+  
+  // Only log in browser, not during build
+  if (isBrowser) {
+    console.error('Firebase configuration invalid. Check your environment variables.');
+  }
+}
 
 export { app, auth, db, storage };
-
-// Firestore helpers
-import { 
-  collection, 
-  query, 
-  where, 
-  orderBy, 
-  limit, 
-  getDocs, 
-  addDoc, 
-  updateDoc, 
-  doc, 
-  deleteDoc, 
-  serverTimestamp 
-} from 'firebase/firestore';
-
-export const postsCollection = collection(db, 'posts');
-export const usersCollection = collection(db, 'users');
-
-export {
-  collection,
-  query,
-  where,
-  orderBy,
-  limit,
-  getDocs,
-  addDoc,
-  updateDoc,
-  doc,
-  deleteDoc,
-  serverTimestamp,
-};

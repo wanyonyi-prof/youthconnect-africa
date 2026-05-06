@@ -41,7 +41,16 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
 
   const ADMIN_EMAILS = ['admin@youthconnect.africa'];
 
+  // Check if Firebase auth is available (avoids build-time errors)
+  const isFirebaseAvailable = typeof window !== 'undefined' && auth;
+
   useEffect(() => {
+    // Skip Firebase initialization during build/SSR
+    if (!isFirebaseAvailable) {
+      setLoading(false);
+      return;
+    }
+
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       setUser(firebaseUser);
       
@@ -112,18 +121,22 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
     });
 
     return unsubscribe;
-  }, []);
+  }, [isFirebaseAvailable]);
 
+  // Dummy functions for build-time (won't be called anyway)
   const login = async (email: string, password: string) => {
+    if (!auth) throw new Error('Firebase not initialized');
     await signInWithEmailAndPassword(auth, email, password);
   };
 
   const signup = async (email: string, password: string, displayName: string) => {
+    if (!auth) throw new Error('Firebase not initialized');
     const { user } = await createUserWithEmailAndPassword(auth, email, password);
     await updateProfile(user, { displayName });
   };
 
   const logout = async () => {
+    if (!auth) throw new Error('Firebase not initialized');
     await signOut(auth);
   };
 
