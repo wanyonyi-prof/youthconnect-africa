@@ -10,6 +10,9 @@ export const metadata: Metadata = {
   title: "YouthConnect Africa | Connect. Discover. Grow.",
   description: "The premier platform connecting African youth with campus stories, gigs, and opportunities across the continent.",
   keywords: "student opportunities Kenya, campus life Africa, youth gigs Africa, African youth platform",
+  verification: {
+    google: "ZS1HkQ-B0Ca0s9-TtetOFATySy8l2l0hX9V345bvHbU",
+  },
   icons: {
     icon: [
       { url: "/images/logo/favicon.ico", sizes: "any" },
@@ -29,6 +32,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <meta name="google-site-verification" content="ZS1HkQ-B0Ca0s9-TtetOFATySy8l2l0hX9V345bvHbU" />
+      </head>
       <body className={inter.className}>
         <AuthProvider>
           <Navbar />

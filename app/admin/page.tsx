@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { collection, getDocs, updateDoc, doc, deleteDoc, orderBy, query } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import Link from 'next/link';
+import Link from 'next/link';  // Add this line at the top with other imports
 
 interface Post {
   id: string;
